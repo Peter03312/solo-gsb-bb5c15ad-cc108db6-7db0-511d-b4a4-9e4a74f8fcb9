@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    image: troupe-rehearsal:latest
+    container_name: troupe-rehearsal
+    ports:
+      - "3000:3000"
+    environment:
+      # 访问端口与地址：http://localhost:3000
+      PORT: "3000"
+      # 生产部署请改为随机长字符串
+      SESSION_SECRET: "change-me-in-production"
+      DB_PATH: "/data/app.db"
+      # 首次启动自动初始化数据库并写入演示账号；设为 "0" 则只建表不写数据
+      SEED_ON_START: "1"
+    volumes:
+      - troupe-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/me').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  troupe-data:

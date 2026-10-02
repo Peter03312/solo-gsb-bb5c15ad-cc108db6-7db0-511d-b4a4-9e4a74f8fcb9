@@ -1,0 +1,19 @@
+{
+  "name": "troupe-rehearsal",
+  "version": "1.0.0",
+  "description": "剧团排练台词管理：版本化剧本、修订冲突合并、排练确认",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "init-db": "node src/init-db.js",
+    "test": "node test/e2e.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  }
+}

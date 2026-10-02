@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>剧团排练台词管理</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <h1>🎭 剧团排练台词管理</h1>
+  <div id="user-bar" class="hidden">
+    <span id="user-info"></span>
+    <button onclick="logout()" class="btn-small">退出</button>
+  </div>
+</header>
+
+<!-- 登录 -->
+<section id="login-view">
+  <div class="card">
+    <h2>登录</h2>
+    <p class="hint">导演：director / director123<br>演员：hamlet、ophelia、ghost / actor123</p>
+    <form id="login-form">
+      <label>用户名 <input name="username" required></label>
+      <label>密码 <input name="password" type="password" required></label>
+      <button type="submit">登录</button>
+    </form>
+    <div id="login-error" class="error"></div>
+  </div>
+</section>
+
+<!-- 导演视图 -->
+<section id="director-view" class="hidden">
+  <div class="tabs">
+    <button class="tab active" data-tab="versions">版本与台词</button>
+    <button class="tab" data-tab="revisions">修订与发布</button>
+    <button class="tab" data-tab="rehearsals">排练与确认</button>
+    <button class="tab" data-tab="characters">角色与演员</button>
+  </div>
+
+  <!-- 版本 -->
+  <div class="tab-panel" id="tab-versions">
+    <div class="card">
+      <h2>已发布版本（不可改写）</h2>
+      <div id="version-list"></div>
+    </div>
+    <div class="card hidden" id="version-detail-card">
+      <h2 id="version-detail-title"></h2>
+      <div id="version-lines"></div>
+    </div>
+    <div class="card hidden" id="create-version-card">
+      <h2>创建首个发布版本</h2>
+      <p class="hint">已有版本后，任何修改必须走“修订 → 发布”流程。</p>
+      <input id="new-version-label" placeholder="版本说明（可选）">
+      <table id="new-lines-table">
+        <thead><tr><th>场次</th><th>顺序</th><th>角色</th><th>内容</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button onclick="addNewLineRow()">+ 添加台词</button>
+      <button class="primary" onclick="createFirstVersion()">发布首版</button>
+    </div>
+  </div>
+
+  <!-- 修订 -->
+  <div class="tab-panel hidden" id="tab-revisions">
+    <div class="card">
+      <h2>创建修订（基于已发布版本）</h2>
+      <form id="revision-form" class="inline-form">
+        <input name="title" placeholder="修订标题，如：第二幕台词润色" required>
+        <select name="base_version_id" id="revision-base"></select>
+        <button type="submit">创建</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>修订列表</h2>
+      <div id="revision-list"></div>
+    </div>
+    <div class="card">
+      <h2>发布修订</h2>
+      <p class="hint">勾选多个互不冲突的修订可合入同一新版。发布时逐条核对现行文本：若条目原文已被其他版本改动，或多个修订改同一条台词，将报冲突且本次发布整体不生效。</p>
+      <div id="publish-checkboxes"></div>
+      <button class="primary" onclick="publishRevisions()">发布所选修订</button>
+      <div id="publish-result"></div>
+    </div>
+    <div class="card">
+      <h2>最近发布记录 / 冲突详情</h2>
+      <div id="attempt-list"></div>
+    </div>
+  </div>
+
+  <!-- 排练 -->
+  <div class="tab-panel hidden" id="tab-rehearsals">
+    <div class="card">
+      <h2>创建排练（固定引用一个版本）</h2>
+      <form id="rehearsal-form" class="inline-form">
+        <input name="name" placeholder="排练名称，如：周五联排" required>
+        <select name="version_id" id="rehearsal-version"></select>
+        <button type="submit">创建</button>
+      </form>
+    </div>
+    <div id="rehearsal-list"></div>
+  </div>
+
+  <!-- 角色 -->
+  <div class="tab-panel hidden" id="tab-characters">
+    <div class="card">
+      <h2>角色与演员分配（改派后原演员确认全部失效）</h2>
+      <form id="char-form" class="inline-form">
+        <input name="name" placeholder="新角色名" required>
+        <button type="submit">新增角色</button>
+      </form>
+      <table id="char-table">
+        <thead><tr><th>角色</th><th>当前演员</th><th>改派</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 演员视图 -->
+<section id="actor-view" class="hidden">
+  <div id="my-rehearsals"></div>
+  <div class="card hidden" id="script-card">
+    <h2 id="script-title"></h2>
+    <p class="hint" id="script-meta"></p>
+    <div id="script-body"></div>
+  </div>
+</section>
+
+<script src="/app.js"></script>
+</body>
+</html>
